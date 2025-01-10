@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Analyze your mood and stress levels with this interactive tool and get helpful suggestions.">
+    <meta name="keywords" content="mood analyzer, stress levels, mental health, interactive tool">
+    <meta name="author" content="Subhajit Sen">
+    <title>Mood and Stress Analyzer</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #ffeb3b;
+        }
+        .question {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .question img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        .options input {
+            margin-right: 10px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #ff5722;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e64a19;
+        }
+        .rating {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .rating input {
+            display: none;
+        }
+        .rating label {
+            color: #ffeb3b;
+            font-size: 30px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ff5722;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .footer a {
+            color: #ffeb3b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
+    <script>
+        let currentQuestion = 0;
+        let answers = [];
+        const questions = [
+            { text: "How satisfied are you with your emotional state today?", options: ["I'm feeling joyful and balanced.", "I'm feeling neutral, neither great nor bad.", "I'm feeling low or stressed."], image: "happy.png" },
+            { text: "What thoughts have been on your mind recently?", options: ["Optimistic and goal-oriented thoughts.", "Routine or mundane things.", "Worries or personal struggles."], image: "thinking.png" },
+            { text: "How do you feel about your current workload?", options: ["I feel it's perfectly manageable.", "It’s a bit busy, but under control.", "It feels overwhelming."], image: "workload.png" },
+            { text: "How well do you think you’re handling your responsibilities?", options: ["I have effective systems to manage them.", "I sometimes struggle but manage overall.", "I feel overburdened and find it challenging."], image: "responsibility.png" },
+            { text: "Do you have sufficient time for yourself?", options: ["Yes, I have plenty of time for self-care.", "I have some time but wish for more.", "No, I barely have any personal time."], image: "personal_time.png" }
+        ];
+
+        function showNextQuestion() {
+            if (currentQuestion < questions.length) {
+                const questionContainer = document.getElementById('question-container');
+                const question = questions[currentQuestion];
+                questionContainer.innerHTML = `
+                    <img src="images/${question.image}" alt="Question Image" onerror="this.src='images/placeholder.png';">
+                    <fieldset>
+                        <legend>${question.text}</legend>
+                        ${question.options.map((option, index) => `<label><input type='radio' name='question${currentQuestion}' value='${option}' required> ${option}</label><br>`).join('')}
+                    </fieldset>
+                    <button onclick='collectAnswer()'>Next</button>
+                `;
+            } else {
+                showResults();
+            }
+        }
+
+        function collectAnswer() {
+            const selectedOption = document.querySelector(`input[name='question${currentQuestion}']:checked`);
+            if (selectedOption) {
+                answers.push(selectedOption.value);
+                currentQuestion++;
+                showNextQuestion();
+            } else {
+                alert("Please select an option to proceed.");
+            }
+        }
+
+        function showResults() {
+            const questionContainer = document.getElementById('question-container');
+            let suggestions = "";
+
+            if (answers.includes("I'm feeling low or stressed.") || answers.includes("Worries or personal struggles.")) {
+                suggestions += "<li>Reach out to a trusted friend, family member, or counselor for support.</li>";
+                suggestions += "<li>Incorporate relaxation techniques like yoga or mindfulness into your daily routine.</li>";
+                suggestions += "<li>Engage in activities that bring you joy, such as hobbies or spending time in nature.</li>";
+            }
+            if (answers.includes("It feels overwhelming.")) {
+                suggestions += "<li>Break tasks into smaller, manageable parts and prioritize effectively.</li>";
+                suggestions += "<li>Communicate with your team or manager to delegate or adjust deadlines.</li>";
+                suggestions += "<li>Ensure you’re not overloading your schedule and consider taking short breaks to recharge.</li>";
+            }
+            if (answers.includes("I barely have any personal time.")) {
+                suggestions += "<li>Set boundaries to protect your personal time and avoid overcommitment.</li>";
+                suggestions += "<li>Schedule regular moments for self-care, like reading, meditating, or exercising.</li>";
+                suggestions += "<li>Reflect on your priorities to ensure you allocate time to things that matter most.</li>";
+            }
+            if (!suggestions) {
+                suggestions = "<li>You seem to be doing well! Keep nurturing your positive habits and maintain balance in your life.</li>";
+            }
+
+            questionContainer.innerHTML = `
+                <h2>Thank you for completing the Mood and Stress Analyzer!</h2>
+                <p>Your responses will help you understand your current mental state better.</p>
+                <p><strong>Suggestions:</strong></p>
+                <ul>${suggestions}</ul>
+                <div class="rating">
+                    <h3>Rate Your Experience</h3>
+                    <form id="rating-form">
+                        <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+                    </form>
+                    <button onclick="submitRating()">Submit Rating</button>
+                </div>
+            `;
+        }
+
+        function submitRating() {
+            const selectedRating = document.querySelector('input[name="rating"]:checked');
+            if (selectedRating) {
+                alert(`Thank you for rating us ${selectedRating.value} stars!`);
+            } else {
+                alert("Please select a rating before submitting.");
+            }
+        }
+
+        window.onload = showNextQuestion;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Mood and Stress Analyzer</h1>
+        <div id="question-container"></div>
+        <div class="footer">
+            <p>Follow me on:</p>
+            <p><a href="https://www.instagram.com/subhajit04sen" target="_blank">Instagram: @subhajit04sen</a></p>
+            <p><a href="https://www.facebook.com/subhajit.sen.165685" target="_blank">Facebook: Subhajit Sen</a></p>
+        </div>
+    </div>
+</body>
+</html>
