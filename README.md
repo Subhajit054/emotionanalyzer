@@ -46,6 +46,3 @@ Facebook: Subhajit Sen
 💡 Final Thoughts
 
 The Mood and Stress Analyzer is a simple yet powerful tool to help users better understand their mental state. It showcases how web technologies can be used to create interactive and impactful applications. Contributions and suggestions are welcome!
-
-
-
