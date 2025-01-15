@@ -10,18 +10,20 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
             color: #fff;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
         .container {
             max-width: 700px;
             margin: 50px auto;
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-out;
         }
         h1, h2 {
             text-align: center;
@@ -30,11 +32,13 @@
         .question {
             margin: 20px 0;
             text-align: center;
+            animation: slideIn 0.8s ease-out;
         }
         .question img {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 10px;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
         }
         .options input {
             margin-right: 10px;
@@ -42,17 +46,30 @@
         button {
             display: block;
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #ff5722;
             color: #fff;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 18px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
         button:hover {
             background-color: #e64a19;
+            transform: scale(1.05);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .footer a {
+            color: #ffeb3b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer a:hover {
+            text-decoration: underline;
         }
         .rating {
             text-align: center;
@@ -63,7 +80,7 @@
         }
         .rating label {
             color: #ffeb3b;
-            font-size: 30px;
+            font-size: 40px;
             cursor: pointer;
             transition: color 0.2s;
         }
@@ -72,25 +89,18 @@
         .rating label:hover ~ label {
             color: #ff5722;
         }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .footer a {
-            color: #ffeb3b;
-            text-decoration: none;
-            font-weight: bold;
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
         }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
-            button {
-                font-size: 14px;
-            }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
     </style>
     <script>
@@ -134,30 +144,29 @@
 
         function showResults() {
             const questionContainer = document.getElementById('question-container');
+            let emotion = "Neutral";
             let suggestions = "";
 
             if (answers.includes("I'm feeling low or stressed.") || answers.includes("Worries or personal struggles.")) {
+                emotion = "Stressed";
                 suggestions += "<li>Reach out to a trusted friend, family member, or counselor for support.</li>";
                 suggestions += "<li>Incorporate relaxation techniques like yoga or mindfulness into your daily routine.</li>";
-                suggestions += "<li>Engage in activities that bring you joy, such as hobbies or spending time in nature.</li>";
-            }
-            if (answers.includes("It feels overwhelming.")) {
-                suggestions += "<li>Break tasks into smaller, manageable parts and prioritize effectively.</li>";
-                suggestions += "<li>Communicate with your team or manager to delegate or adjust deadlines.</li>";
-                suggestions += "<li>Ensure you’re not overloading your schedule and consider taking short breaks to recharge.</li>";
-            }
-            if (answers.includes("I barely have any personal time.")) {
-                suggestions += "<li>Set boundaries to protect your personal time and avoid overcommitment.</li>";
-                suggestions += "<li>Schedule regular moments for self-care, like reading, meditating, or exercising.</li>";
-                suggestions += "<li>Reflect on your priorities to ensure you allocate time to things that matter most.</li>";
-            }
-            if (!suggestions) {
-                suggestions = "<li>You seem to be doing well! Keep nurturing your positive habits and maintain balance in your life.</li>";
+                suggestions += "<li>Consider professional help, such as therapy or coaching, for stress management.</li>";
+            } else if (answers.includes("I'm feeling joyful and balanced.")) {
+                emotion = "Happy";
+                suggestions += "<li>Keep up the positive mindset and continue engaging in activities that bring you joy.</li>";
+                suggestions += "<li>Spend time with friends and loved ones to maintain positive energy.</li>";
+                suggestions += "<li>Keep a gratitude journal to focus on the positives in your life.</li>";
+            } else if (answers.includes("It’s a bit busy, but under control.") || answers.includes("I sometimes struggle but manage overall.")) {
+                emotion = "Neutral";
+                suggestions += "<li>Take short breaks throughout the day to recharge.</li>";
+                suggestions += "<li>Set small, achievable goals to prevent feeling overwhelmed.</li>";
+                suggestions += "<li>Try journaling to organize your thoughts and manage stress.</li>";
+                suggestions += "<li>Engage in hobbies or activities that you enjoy during your free time.</li>";
             }
 
             questionContainer.innerHTML = `
-                <h2>Thank you for completing the Mood and Stress Analyzer!</h2>
-                <p>Your responses will help you understand your current mental state better.</p>
+                <h2>Your Emotional State: ${emotion}</h2>
                 <p><strong>Suggestions:</strong></p>
                 <ul>${suggestions}</ul>
                 <div class="rating">
